@@ -1,7 +1,9 @@
 # coding=utf-8
+import os
+from multiprocessing import Pool
+
 import requests
 from pyquery import PyQuery as pq
-import os
 
 url = 'http://www.budejie.com/'
 
@@ -50,8 +52,16 @@ def download(filename, img_url):
             f.write(response.content)
 
 
-if __name__ == '__main__':
-    html = get_page(1)
+def main(page):
+    html = get_page(page)
     data = parse_page(html)
     for d in data:
         download(d['title'], d['img'])
+
+
+if __name__ == '__main__':
+    pool = Pool()
+    groups = ([x for x in range(10)])
+    pool.map(main, groups)
+    pool.close()
+    pool.join()
